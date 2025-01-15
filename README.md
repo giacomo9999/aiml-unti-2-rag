@@ -120,6 +120,7 @@ Your users want more variety in the recommendations they receive!
   - Generate embeddings for those batches. I highly recommend saving each response along the way so you don’t lose your progress!
 - Upsert your new embeddings to Pinecone.
 
+
 ## Further extensions
 
 First and foremost, **_make your testing more robust!_** If you want to keep iterating on this app, consider reducing costs, reducing latency, improving security, incorporating monitoring, and so on.
