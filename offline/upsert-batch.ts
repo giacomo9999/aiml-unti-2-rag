@@ -61,7 +61,7 @@ const upsertBatchesToPicone = async (
 
   const upsertResults = await Promise.allSettled(
     pineconeBatches.map(async (batch, i) => {
-      // await delayBatch(1000 * i); // Uncomment if you're getting Pinecone network errors
+      await delayBatch(8000 * i); // Uncomment if you're getting Pinecone network errors
       console.log(
         `Upserting batch ${i} of ${pineconeBatches.length}: IDs ${
           batch[0].id
