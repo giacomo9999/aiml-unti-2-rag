@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import './styles.css';
 import Recommendations from './Components/Recommendations';
+import { InputForm } from './Components/InputForm';
 
 const App = () => {
   return (

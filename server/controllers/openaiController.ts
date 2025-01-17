@@ -76,7 +76,7 @@ export const queryOpenAIEmbedding: RequestHandler = async (_req, res, next) => {
 };
 
 export const queryOpenAIChat: RequestHandler = async (_req, res, next) => {
-  const { userQuery, pineconeQueryResult, goodMovieOptions } = res.locals;
+  const { userQuery, startYear, endYear, pineconeQueryResult, goodMovieOptions } = res.locals;
 
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
@@ -86,7 +86,7 @@ export const queryOpenAIChat: RequestHandler = async (_req, res, next) => {
         },
         {
             role: "user",
-            content: `Please recommend a movie that fits this description: ${userQuery}`,
+            content: `Please recommend a movie that fits this description: ${userQuery}. Limit your response  to movies that have been released between the years ${startYear} and ${endYear}.`,
           },
           {
           role: "user",
