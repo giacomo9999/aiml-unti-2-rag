@@ -15,7 +15,10 @@ export const parseUserQuery: RequestHandler = async (
     return next(error);
   }
 
-  const { userQuery } = req.body;
+  const { userQuery, startYear, endYear } = req.body;
+  console.log('userQuery:', userQuery);
+  console.log('startYear:', startYear);
+  console.log('endYear:', endYear);
 
   if (typeof userQuery !== 'string') {
     const error: ServerError = {
@@ -27,5 +30,8 @@ export const parseUserQuery: RequestHandler = async (
   }
 
   res.locals.userQuery = userQuery;
+  res.locals.startYear = startYear;
+  res.locals.endYear = endYear;
+  console.log('res.locals1:', res.locals);
   return next();
 };

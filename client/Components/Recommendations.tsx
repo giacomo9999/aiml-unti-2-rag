@@ -1,3 +1,4 @@
+import e from 'express';
 import React, { useState } from 'react';
 
 interface ParsedResponse {
@@ -7,6 +8,8 @@ interface ParsedResponse {
 const Recommendations = () => {
   const [userQuery, setUserQuery] = useState('');
   const [recommendation, setRecommendation] = useState('');
+  const [startYear, setStartYear] = useState('');
+  const [endYear, setEndYear] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -20,7 +23,7 @@ const Recommendations = () => {
       const response = await fetch('/api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userQuery }),
+        body: JSON.stringify({ userQuery, startYear, endYear }),
       });
 
       if (response.status !== 200) {
@@ -47,6 +50,26 @@ const Recommendations = () => {
             value={userQuery}
             onChange={(e) => setUserQuery(e.target.value)}
             placeholder="Enter movie summary"
+            style={{ width: '100%', padding: '8px', marginTop: '8px' }}
+          />
+        </label>
+        <label>
+          Start Year Of Range:
+          <input
+            type="text"
+            value={startYear}
+            onChange={(e) => setStartYear(e.target.value)}
+            placeholder="Enter start year"
+            style={{ width: '100%', padding: '8px', marginTop: '8px' }}
+          />
+        </label>
+        <label>
+          End Year Of Range:
+          <input
+            type="text"
+            value={endYear}
+            onChange={(e) => setEndYear(e.target.value)}
+            placeholder="Enter end year"
             style={{ width: '100%', padding: '8px', marginTop: '8px' }}
           />
         </label>
