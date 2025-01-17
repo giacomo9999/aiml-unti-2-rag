@@ -1,13 +1,22 @@
 import { RequestHandler } from 'express';
 import { ServerError, MovieMetadata } from '../../types/types';
+import { Pinecone } from '@pinecone-database/pinecone';
+import 'dotenv/config';
+
+const pineconeApiKey = process.env.PINECONE_API_KEY;
+
+const pinecone = new Pinecone({
+  apiKey: `${pineconeApiKey}`,
+});
 
 export const queryPineconeDatabase: RequestHandler = async (
   _req,
   res,
   next
 ) => {
-  const { embedding } = res.locals;
-  if (!embedding) {
+  const { embeddings} = res.locals;
+  
+  if (!embeddings){
     const error: ServerError = {
       log: 'Database query middleware did not receive embedding',
       status: 500,
@@ -16,6 +25,43 @@ export const queryPineconeDatabase: RequestHandler = async (
     return next(error);
   }
 
+
+    const index = pinecone.Index('movies');
+    const queryResponse = await index.query({
+        // queries: [{ values: queryEmbedding }],
+        // topK: 2,
+        vector: embeddings,
+        topK: 3,
+        includeValues: true,
+        includeMetadata: true,
+    });
+    console.log('queryResponse: ', queryResponse);
+    if (!queryResponse.matches[0].metadata) {
+      const error: ServerError = {
+        log: 'Database query did not return metadata',
+        status: 500,
+        message: { err: 'An error occurred while querying the database' },
+      };
+      return next(error);
+    }
+    console.log('queryResponse values: ', queryResponse.matches[0].metadata.title);
+
+    const titles = [];
+
+    
+    for (let i = 0; i < queryResponse.matches.length; i++) {
+      if (!queryResponse.matches[i].metadata) {
+        titles.push('No title found');
+        return next(titles);
+      } else {
+      titles.push(queryResponse.matches[i].metadata!.title);
+    }
+  }
+    console.log('titles: ', titles);
+    res.locals.goodMovieOptions = titles;
+
+    // res.locals.pineconeQueryResult = queryResponse;
+  
     res.locals.pineconeQueryResult = [
       {
         id: 'sample-3',

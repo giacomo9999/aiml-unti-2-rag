@@ -1,4 +1,7 @@
-import express, { ErrorRequestHandler } from 'express';
+import express, { ErrorRequestHandler, query } from 'express';
+import { queryOpenAIChat, queryOpenAIEmbedding } from './controllers/openaiController.js';
+import { parseUserQuery } from './controllers/userQueryController.js';
+import { queryPineconeDatabase } from './controllers/pineconeController.js';
 import cors from 'cors';
 import 'dotenv/config';
 
@@ -9,10 +12,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post('/api', (_req, res) => {
+app.post('/api',
+  parseUserQuery,
+  queryOpenAIEmbedding,
+  queryPineconeDatabase,
+  queryOpenAIChat,
+  (_req, res) => {
   res.status(200).json({
     movieRecommendation:
-      'Wishmaster - A malevolent genie wreaks havoc after being freed, leading to a battle between his dark desires and those trying to stop him.',
+      `${res.locals.movieRecommendation}`,
   });
 });
 
